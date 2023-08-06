@@ -1,6 +1,9 @@
 //A*B
 #include <iostream>
 #include <vector>
+#include <fstream>
+#include <string>
+#include <sstream>
 
 
 
@@ -45,19 +48,32 @@ int checking(std::vector<std::vector<long double>> A, std::vector<std::vector<lo
 
 
 
+std::vector<std::vector<long double>> readMatrixFromFile(const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file) {
+        std::cout << "Error opening file '" << filename << "'" << std::endl;
+        return {};
+    }
+
+    std::vector<std::vector<long double>> matrix;
+    std::string line;
+    while (std::getline(file, line) && !line.empty()) {
+        std::vector<long double> row;
+        std::istringstream iss(line);
+        int value;
+        while (iss >> value) {
+            row.push_back(value);
+        }
+        matrix.push_back(row);
+    }
+
+    return matrix;
+}
+
 
 int main() {
-    std::vector<std::vector<long double>> A = {
-        {1, 2, 3},
-        {4, 5, 6},
-        {7, 8, 9}
-    };
-
-    std::vector<std::vector<long double>> B = {
-        {1, 2, 3},
-        {4, 5, 6},
-        {7, 8, 9}
-    };
+    std::vector<std::vector<long double>> A = readMatrixFromFile("a.txt");
+    std::vector<std::vector<long double>> B = readMatrixFromFile("b.txt");
 
     if(checking(A,B) == 0){
         std::cout << "Cant be multiplied";
@@ -65,3 +81,4 @@ int main() {
     else{std::cout << "Done";}
     return 0;
 }
+
